@@ -1,19 +1,37 @@
 import React from 'react';
+import '../../styles/components/AuthForm.css';
 
 const AuthForm = () => {
   return (
-    <section id="auth">
-      <h2>Login/Register</h2>
-      <form id="auth-form">
-        <label htmlFor="username">Username:</label>
-        <input type="text" id="username" name="username" required />
+    <div className="auth-container">
+      <form className="auth-form">
+        <h2>Login/Register</h2>
+        
+        <div className="form-group">
+          <label htmlFor="username">Username:</label>
+          <input 
+            type="text" 
+            id="username" 
+            name="username" 
+            required 
+          />
+        </div>
 
-        <label htmlFor="password">Password:</label>
-        <input type="password" id="password" name="password" required />
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            required 
+          />
+        </div>
 
-        <button type="submit">Login/Register</button>
+        <button type="submit" className="submit-btn">
+          Login/Register
+        </button>
       </form>
-    </section>
+    </div>
   );
 };
 

@@ -1,22 +1,45 @@
 import React from 'react';
+import '../../styles/components/CreateRecipe.css';
 
 const CreateRecipe = () => {
   return (
-    <section id="create-recipe">
-      <h2>Create Recipe</h2>
-      <form id="recipe-form">
-        <label htmlFor="recipe-name">Recipe Name:</label>
-        <input type="text" id="recipe-name" name="recipe-name" required />
+    <div className="create-recipe-container">
+      <form className="recipe-form">
+        <h2>Create Recipe</h2>
+        
+        <div className="form-group">
+          <label htmlFor="recipe-name">Recipe Name:</label>
+          <input 
+            type="text" 
+            id="recipe-name" 
+            name="recipe-name" 
+            required 
+          />
+        </div>
 
-        <label htmlFor="recipe-ingredients">Ingredients:</label>
-        <textarea id="recipe-ingredients" name="recipe-ingredients" required></textarea>
+        <div className="form-group">
+          <label htmlFor="recipe-ingredients">Ingredients:</label>
+          <textarea 
+            id="recipe-ingredients" 
+            name="recipe-ingredients" 
+            required
+          ></textarea>
+        </div>
 
-        <label htmlFor="recipe-steps">Steps:</label>
-        <textarea id="recipe-steps" name="recipe-steps" required></textarea>
+        <div className="form-group">
+          <label htmlFor="recipe-steps">Steps:</label>
+          <textarea 
+            id="recipe-steps" 
+            name="recipe-steps" 
+            required
+          ></textarea>
+        </div>
 
-        <button type="submit">Create Recipe</button>
+        <button type="submit" className="submit-btn">
+          Create Recipe
+        </button>
       </form>
-    </section>
+    </div>
   );
 };
 

@@ -5,6 +5,7 @@
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: left;
 }
 
 .recipe-info {
@@ -20,25 +21,40 @@
 .recipe-ingredients, 
 .recipe-instructions {
   margin-top: 2rem;
+  text-align: left;
 }
 
 .recipe-ingredients ul {
   list-style-type: none;
   padding-left: 0;
+  text-align: left;
 }
 
 .recipe-instructions ol {
   padding-left: 1.5rem;
+  text-align: left;
 }
 
 .recipe-ingredients li,
 .recipe-instructions li {
   margin-bottom: 0.8rem;
   line-height: 1.6;
+  text-align: left;
 }
 
 .recipe-ingredients h3,
 .recipe-instructions h3 {
   color: var(--primary-color);
   margin: 1.5rem 0 1rem;
+  text-align: left;
+}
+
+/* Additional styles for better readability */
+.recipe-instructions ol li {
+  padding-left: 0.5rem;
+}
+
+.recipe-ingredients ul li {
+  padding-left: 0;
+  margin-left: 0;
 }
