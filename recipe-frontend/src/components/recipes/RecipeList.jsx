@@ -1,7 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/components/RecipeList.css';
 
 const RecipeList = () => {
+  const navigate = useNavigate();
+  
   const sampleRecipes = [
     {
       id: 1,
@@ -23,6 +26,10 @@ const RecipeList = () => {
     }
   ];
 
+  const handleViewRecipe = (id) => {
+    navigate(`/recipe/${id}`);
+  };
+
   return (
     <section id="recipes">
       <h2>Recipes</h2>
@@ -34,7 +41,12 @@ const RecipeList = () => {
               <p><strong>Cooking Time:</strong> {recipe.cookingTime}</p>
               <p><strong>Difficulty:</strong> {recipe.difficulty}</p>
             </div>
-            <button className="view-recipe-btn">View Recipe</button>
+            <button 
+              className="view-recipe-btn"
+              onClick={() => handleViewRecipe(recipe.id)}
+            >
+              View Recipe
+            </button>
           </div>
         ))}
       </div>
