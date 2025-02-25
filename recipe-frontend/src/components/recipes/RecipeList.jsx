@@ -1,25 +1,23 @@
 import React from 'react';
+import '../../styles/components/RecipeList.css';
 
 const RecipeList = () => {
   const sampleRecipes = [
     {
       id: 1,
       name: 'Classic Spaghetti Carbonara',
-      ingredients: ['Pasta', 'Eggs', 'Pecorino Romano', 'Pancetta', 'Black Pepper'],
       cookingTime: '25 mins',
       difficulty: 'Medium'
     },
     {
       id: 2,
       name: 'Chicken Stir Fry',
-      ingredients: ['Chicken Breast', 'Mixed Vegetables', 'Soy Sauce', 'Ginger', 'Garlic'],
       cookingTime: '20 mins',
       difficulty: 'Easy'
     },
     {
       id: 3,
-      name: 'Vegetarian Buddha Bowl',
-      ingredients: ['Quinoa', 'Chickpeas', 'Avocado', 'Sweet Potato', 'Kale'],
+      name: 'Vegetarian Super Bowl Sizzler',
       cookingTime: '30 mins',
       difficulty: 'Easy'
     }
@@ -35,14 +33,6 @@ const RecipeList = () => {
             <div className="recipe-details">
               <p><strong>Cooking Time:</strong> {recipe.cookingTime}</p>
               <p><strong>Difficulty:</strong> {recipe.difficulty}</p>
-            </div>
-            <div className="recipe-ingredients">
-              <h4>Ingredients:</h4>
-              <ul>
-                {recipe.ingredients.map((ingredient, index) => (
-                  <li key={index}>{ingredient}</li>
-                ))}
-              </ul>
             </div>
             <button className="view-recipe-btn">View Recipe</button>
           </div>
