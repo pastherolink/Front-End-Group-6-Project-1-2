@@ -58,3 +58,24 @@
   padding-left: 0;
   margin-left: 0;
 }
+
+.recipe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.edit-recipe-link {
+  padding: 0.5rem 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: opacity 0.2s ease;
+}
+
+.edit-recipe-link:hover {
+  opacity: 0.9;
+}

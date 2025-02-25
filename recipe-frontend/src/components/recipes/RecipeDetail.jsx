@@ -1,10 +1,19 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import '../../styles/components/RecipeDetail.css';
 
 const RecipeDetail = ({ recipe = sampleRecipe }) => {
   return (
     <div className="recipe-detail">
-      <h2>{recipe.name}</h2>
+      <div className="recipe-header">
+        <h2>{recipe.name}</h2>
+        <Link 
+          to={`/recipe/edit/${recipe.id}`} 
+          className="edit-recipe-link"
+        >
+          Edit Recipe
+        </Link>
+      </div>
       <div className="recipe-info">
         <p><strong>Cooking Time:</strong> {recipe.cookingTime}</p>
         <p><strong>Difficulty:</strong> {recipe.difficulty}</p>
