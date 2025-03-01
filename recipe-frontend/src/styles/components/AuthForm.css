@@ -55,3 +55,25 @@
 .submit-btn:hover {
   opacity: 0.9;
 }
+
+.error-message {
+  color: #dc3545;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #dc3545;
+  border-radius: 4px;
+  background-color: #f8d7da;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.toggle-btn:hover {
+  color: #0056b3;
+}
