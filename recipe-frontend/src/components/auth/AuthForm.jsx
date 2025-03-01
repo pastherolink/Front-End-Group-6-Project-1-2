@@ -17,17 +17,16 @@ const AuthForm = () => {
 
     try {
       const endpoint = `/auth/${isLogin ? 'login' : 'register'}`;
-      const response = await POST(endpoint, formData);
-
-      if (!response.ok) {
+      const data = await POST(endpoint, formData);
+      
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        navigate('/recipes');
+      } else {
         throw new Error(isLogin ? 'Login failed' : 'Registration failed');
       }
-
-      const data = await response.json();
-      localStorage.setItem('token', data.token);
-      navigate('/recipes');
     } catch (err) {
-      setError('Authentication failed');
+      setError(err.message || 'Authentication failed');
     }
   };
 
