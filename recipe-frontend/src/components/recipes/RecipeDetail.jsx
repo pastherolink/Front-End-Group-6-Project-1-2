@@ -1,8 +1,36 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import '../../styles/components/RecipeDetail.css';
 
-const RecipeDetail = ({ recipe = sampleRecipe }) => {
+const RecipeDetail = () => {
+  const { id } = useParams();
+  const [recipe, setRecipe] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchRecipe = async () => {
+      try {
+        const response = await fetch(`http://localhost:3001/api/recipes/${id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch recipe');
+        }
+        const data = await response.json();
+        setRecipe(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchRecipe();
+  }, [id]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!recipe) return <div>Recipe not found</div>;
+
   return (
     <div className="recipe-detail">
       <div className="recipe-header">
@@ -37,29 +65,6 @@ const RecipeDetail = ({ recipe = sampleRecipe }) => {
       </div>
     </div>
   );
-};
-
-const sampleRecipe = {
-  id: 1,
-  name: 'Classic Spaghetti Carbonara',
-  cookingTime: '25 mins',
-  difficulty: 'Medium',
-  servings: '4',
-  ingredients: [
-    '400g spaghetti',
-    '200g pancetta or guanciale',
-    '4 large eggs',
-    '100g Pecorino Romano',
-    'Black pepper to taste'
-  ],
-  instructions: [
-    'Bring a large pot of salted water to boil and cook spaghetti according to package instructions.',
-    'While pasta cooks, cut pancetta into small cubes and fry until crispy.',
-    'In a bowl, whisk eggs, grated cheese, and black pepper.',
-    'Drain pasta, reserving some cooking water.',
-    'Combine hot pasta with egg mixture, adding cooking water if needed.',
-    'Serve immediately with extra cheese and black pepper.'
-  ]
 };
 
 export default RecipeDetail;
