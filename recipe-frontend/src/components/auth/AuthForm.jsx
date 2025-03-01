@@ -1,11 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/components/AuthForm.css';
+import { POST } from '../../utils/api';
 
 const AuthForm = () => {
+  const navigate = useNavigate();
+  const [isLogin, setIsLogin] = useState(true);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = {
+      username: e.target.username.value,
+      password: e.target.password.value
+    };
+
+    try {
+      const endpoint = `/auth/${isLogin ? 'login' : 'register'}`;
+      const data = await POST(endpoint, formData);
+      
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        navigate('/recipes');
+      } else {
+        throw new Error(isLogin ? 'Login failed' : 'Registration failed');
+      }
+    } catch (err) {
+      setError(err.message || 'Authentication failed');
+    }
+  };
+
   return (
     <div className="auth-container">
-      <form className="auth-form">
-        <h2>Login/Register</h2>
+      {error && <div className="error-message">{error}</div>}
+      <form className="auth-form" onSubmit={handleSubmit}>
+        <h2>{isLogin ? 'Login' : 'Register'}</h2>
         
         <div className="form-group">
           <label htmlFor="username">Username:</label>
@@ -28,7 +57,15 @@ const AuthForm = () => {
         </div>
 
         <button type="submit" className="submit-btn">
-          Login/Register
+          {isLogin ? 'Login' : 'Register'}
+        </button>
+
+        <button 
+          type="button" 
+          className="toggle-btn"
+          onClick={() => setIsLogin(!isLogin)}
+        >
+          {isLogin ? 'Need an account? Register' : 'Have an account? Login'}
         </button>
       </form>
     </div>
