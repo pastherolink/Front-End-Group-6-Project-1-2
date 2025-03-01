@@ -1,39 +1,86 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../../styles/components/EditRecipe.css';
 
 function EditRecipe() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [recipe, setRecipe] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // This would later be replaced with an API call to get the recipe data
-  const recipe = {
-    id: id,
-    name: 'Classic Spaghetti Carbonara',
-    cookingTime: '25 mins',
-    difficulty: 'Medium',
-    servings: 4,
-    ingredients: [
-      '400g spaghetti',
-      '200g pancetta',
-      '4 large eggs',
-      '100g Pecorino Romano',
-      'Black pepper to taste'
-    ],
-    instructions: [
-      'Bring a large pot of salted water to boil',
-      'Cook pasta according to package instructions',
-      'Fry pancetta until crispy',
-      'Mix eggs and cheese',
-      'Combine all ingredients'
-    ]
-  };
+  useEffect(() => {
+    const fetchRecipe = async () => {
+      try {
+        const response = await fetch(`http://localhost:3001/api/recipes/${id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch recipe');
+        }
+        const data = await response.json();
+        setRecipe(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
 
-  const handleSubmit = (e) => {
+    fetchRecipe();
+  }, [id]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add save logic here
-    navigate(`/recipe/${id}`);
+    const formData = new FormData(e.target);
+    
+    const updatedRecipe = {
+      name: formData.get('recipe-name'),
+      cookingTime: formData.get('cooking-time'),
+      difficulty: formData.get('difficulty'),
+      servings: parseInt(formData.get('servings')),
+      ingredients: formData.get('ingredients').split('\n').filter(i => i.trim()),
+      instructions: formData.get('instructions').split('\n').filter(i => i.trim())
+    };
+
+    try {
+      const response = await fetch(`http://localhost:3001/api/recipes/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedRecipe)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update recipe');
+      }
+
+      navigate(`/recipe/${id}`);
+    } catch (err) {
+      setError(err.message);
+    }
   };
+
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this recipe?')) {
+      try {
+        const response = await fetch(`http://localhost:3001/api/recipes/${id}`, {
+          method: 'DELETE'
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to delete recipe');
+        }
+
+        navigate('/recipes');
+      } catch (err) {
+        setError(err.message);
+      }
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!recipe) return <div>Recipe not found</div>;
 
   return (
     <div className="edit-recipe-container">
@@ -115,6 +162,13 @@ function EditRecipe() {
             onClick={() => navigate(`/recipe/${id}`)}
           >
             Cancel
+          </button>
+          <button 
+            type="button" 
+            className="delete-btn"
+            onClick={handleDelete}
+          >
+            Delete Recipe
           </button>
         </div>
       </form>
