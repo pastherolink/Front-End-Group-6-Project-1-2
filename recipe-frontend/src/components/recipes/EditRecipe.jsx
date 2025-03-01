@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../../styles/components/EditRecipe.css';
+import { GET, PUT } from '../../utils/api';
 
 function EditRecipe() {
   const { id } = useParams();
@@ -12,15 +13,12 @@ function EditRecipe() {
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/recipes/${id}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch recipe');
-        }
-        const data = await response.json();
+        const data = await GET(`/recipes/${id}`);
         setRecipe(data);
         setLoading(false);
-      } catch (err) {
-        setError(err.message);
+      } catch (error) {
+        console.error('Failed to fetch recipe:', error);
+        setError(error.message);
         setLoading(false);
       }
     };
@@ -42,21 +40,10 @@ function EditRecipe() {
     };
 
     try {
-      const response = await fetch(`http://localhost:3001/api/recipes/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedRecipe)
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update recipe');
-      }
-
+      await PUT(`/recipes/${id}`, updatedRecipe);
       navigate(`/recipe/${id}`);
-    } catch (err) {
-      setError(err.message);
+    } catch (error) {
+      setError('Failed to update recipe');
     }
   };
 

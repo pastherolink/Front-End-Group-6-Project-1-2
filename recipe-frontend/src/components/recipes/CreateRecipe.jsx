@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/components/CreateRecipe.css';
+import { POST } from '../../utils/api';
 
 const CreateRecipe = () => {
   const navigate = useNavigate();
@@ -20,22 +21,10 @@ const CreateRecipe = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:3001/api/recipes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newRecipe)
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create recipe');
-      }
-
-      const data = await response.json();
-      navigate(`/recipe/${data.id}`);
-    } catch (err) {
-      setError(err.message);
+      await POST('/recipes', newRecipe);
+      navigate('/recipes');
+    } catch (error) {
+      setError('Failed to create recipe');
     }
   };
 

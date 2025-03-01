@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/components/AuthForm.css';
+import { POST } from '../../utils/api';
 
 const AuthForm = () => {
   const navigate = useNavigate();
@@ -15,14 +16,8 @@ const AuthForm = () => {
     };
 
     try {
-      const endpoint = isLogin ? 'login' : 'register';
-      const response = await fetch(`http://localhost:3001/api/auth/${endpoint}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
+      const endpoint = `/auth/${isLogin ? 'login' : 'register'}`;
+      const response = await POST(endpoint, formData);
 
       if (!response.ok) {
         throw new Error(isLogin ? 'Login failed' : 'Registration failed');
@@ -32,7 +27,7 @@ const AuthForm = () => {
       localStorage.setItem('token', data.token);
       navigate('/recipes');
     } catch (err) {
-      setError(err.message);
+      setError('Authentication failed');
     }
   };
 

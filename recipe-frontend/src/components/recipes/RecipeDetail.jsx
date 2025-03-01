@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import '../../styles/components/RecipeDetail.css';
+import { GET } from '../../utils/api';
 
 const RecipeDetail = () => {
   const { id } = useParams();
@@ -11,11 +12,7 @@ const RecipeDetail = () => {
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/recipes/${id}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch recipe');
-        }
-        const data = await response.json();
+        const data = await GET(`/recipes/${id}`);
         setRecipe(data);
         setLoading(false);
       } catch (err) {

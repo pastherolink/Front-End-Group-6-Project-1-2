@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/components/RecipeList.css';
+import { GET, DELETE } from '../../utils/api';
 
 const RecipeList = () => {
   const navigate = useNavigate();
@@ -11,11 +12,7 @@ const RecipeList = () => {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/recipes');
-        if (!response.ok) {
-          throw new Error('Failed to fetch recipes');
-        }
-        const data = await response.json();
+        const data = await GET('/recipes');
         setRecipes(data);
         setLoading(false);
       } catch (err) {
@@ -29,6 +26,15 @@ const RecipeList = () => {
 
   const handleViewRecipe = (id) => {
     navigate(`/recipe/${id}`);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await DELETE(`/recipes/${id}`);
+      fetchRecipes(); // Refresh the list
+    } catch (error) {
+      console.error('Failed to delete recipe:', error);
+    }
   };
 
   if (loading) {
@@ -55,6 +61,12 @@ const RecipeList = () => {
               onClick={() => handleViewRecipe(recipe.id)}
             >
               View Recipe
+            </button>
+            <button 
+              className="delete-recipe-btn"
+              onClick={() => handleDelete(recipe.id)}
+            >
+              Delete Recipe
             </button>
           </div>
         ))}
