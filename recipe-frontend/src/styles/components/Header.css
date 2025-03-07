@@ -1,11 +1,45 @@
-.header {
+/*******************************
+ * HEADER CONTAINER
+ * Main header element styles
+ *******************************/
+header {
   background-color: var(--primary-color);
   padding: var(--spacing);
+  padding-top: 10px; 
+  margin-top: 50px;
   color: white;
+  text-align: center;
 }
 
+/*******************************
+ * NAVIGATION MENU
+ * Internal header navigation
+ *******************************/
 .nav-menu {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+/*******************************
+ * RESPONSIVE STYLES
+ * Adjustments for different devices
+ *******************************/
+/* Tablet and medium screens */
+@media (max-width: 768px) {
+  header {
+    padding: 1rem;
+    padding-top: 310px;
+    margin-top: 60px;
+    margin: 0 1rem;
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+  header {
+    padding: 0.75rem;
+    padding-top: 310px; 
+    margin-top: 50px;
+  }
 }

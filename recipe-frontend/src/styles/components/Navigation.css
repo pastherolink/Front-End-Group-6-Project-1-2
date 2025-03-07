@@ -49,7 +49,6 @@
   color: var(--primary-color);
 }
 
-/* Ensure content below navigation is not hidden */
 body {
   padding-top: 70px; /* Adjust this value based on your navigation height */
 }

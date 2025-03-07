@@ -1,3 +1,7 @@
+/*******************************
+ * PAGE LAYOUT
+ * Overall container for the create recipe page
+ *******************************/
 .create-recipe-container {
   display: flex;
   justify-content: center;
@@ -6,6 +10,10 @@
   padding: 2rem;
 }
 
+/*******************************
+ * FORM CONTAINER
+ * Card containing the recipe form
+ *******************************/
 .recipe-form {
   background: white;
   padding: 2rem;
@@ -21,6 +29,10 @@
   margin-bottom: 2rem;
 }
 
+/*******************************
+ * FORM FIELDS
+ * Input groups and form controls
+ *******************************/
 .form-group {
   margin-bottom: 1.5rem;
 }
@@ -45,6 +57,29 @@
   resize: vertical;
 }
 
+/*******************************
+ * VALIDATION FEEDBACK
+ * Error messages and validation states
+ *******************************/
+.error-message {
+  color: #e83143;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #dc3545;
+  border-radius: 4px;
+  background-color: #f8d7da;
+}
+
+/*******************************
+ * FORM ACTIONS
+ * Submit and cancel buttons
+ *******************************/
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
 .submit-btn {
   width: 100%;
   padding: 0.75rem;
@@ -59,21 +94,6 @@
 
 .submit-btn:hover {
   opacity: 0.9;
-}
-
-.error-message {
-  color: #e83143;
-  padding: 10px;
-  margin-bottom: 20px;
-  border: 1px solid #dc3545;
-  border-radius: 4px;
-  background-color: #f8d7da;
-}
-
-.button-group {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
 }
 
 .cancel-btn {

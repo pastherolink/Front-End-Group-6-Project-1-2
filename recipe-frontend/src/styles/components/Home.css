@@ -1,3 +1,7 @@
+/*******************************
+ * HERO SECTION STYLES
+ * Top banner area of the homepage
+ *******************************/
 .hero-section {
   text-align: center;
   padding: 4rem 2rem;
@@ -19,6 +23,10 @@
   opacity: 0.9;
 }
 
+/*******************************
+ * FEATURES SECTION STYLES
+ * Middle section with feature cards
+ *******************************/
 .features-section {
   padding: 2rem;
   text-align: center;
@@ -48,6 +56,10 @@
   margin-bottom: 1rem;
 }
 
+/*******************************
+ * CALL TO ACTION SECTION STYLES
+ * Bottom section encouraging user action
+ *******************************/
 .cta-section {
   text-align: center;
   padding: 3rem 2rem;
@@ -61,6 +73,10 @@
   margin-bottom: 1rem;
 }
 
+/*******************************
+ * RESPONSIVE DESIGN
+ * Adjustments for different screen sizes
+ *******************************/
 @media (max-width: 768px) {
   .hero-section h1 {
     font-size: 2rem;
