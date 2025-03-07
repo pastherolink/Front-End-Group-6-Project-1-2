@@ -14,7 +14,7 @@ Sean
 Welcome to the most delicious project you'll ever work on! In this 1/2 semester project, your group will whip up a fully-functional Recipe List Application using the following ingredients:
 - **Database**: Postgres
 - **Back-End**: Java (Spring)
-- **Front-End**: ReactJS
+- **Front-End**: ReactJS Vite
 - **Version Control**: GitHub
 
 You'll have three repositories - one for the database (Postgres), one for the back-end (Java Spring), and one for the front-end (React) - that every group member will have access to and contribute to. And guess what? You'll even get a production location to deploy your culinary masterpiece!

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../../styles/components/EditRecipe.css';
-import { GET, PUT } from '../../utils/api';
+import { GET, PUT, DELETE } from '../../utils/api';
 
 function EditRecipe() {
   const { id } = useParams();
@@ -50,14 +50,7 @@ function EditRecipe() {
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this recipe?')) {
       try {
-        const response = await fetch(`http://localhost:3001/api/recipes/${id}`, {
-          method: 'DELETE'
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to delete recipe');
-        }
-
+        await DELETE(`/recipes/${id}`);
         navigate('/recipes');
       } catch (err) {
         setError(err.message);
