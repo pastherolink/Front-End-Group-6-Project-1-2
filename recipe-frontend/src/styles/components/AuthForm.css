@@ -1,3 +1,7 @@
+/*******************************
+ * PAGE LAYOUT
+ * Overall container for the auth page
+ *******************************/
 .auth-container {
   display: flex;
   flex-direction: column;
@@ -7,6 +11,10 @@
   padding: 2rem;
 }
 
+/*******************************
+ * FORM CONTAINER
+ * Card containing the auth form
+ *******************************/
 .auth-form {
   background: white;
   padding: 2rem;
@@ -22,6 +30,10 @@
   margin-bottom: 2rem;
 }
 
+/*******************************
+ * FORM FIELDS
+ * Input groups and form controls
+ *******************************/
 .form-group {
   margin-bottom: 1rem;
 }
@@ -40,6 +52,10 @@
   font-size: 1rem;
 }
 
+/*******************************
+ * FORM ACTIONS
+ * Submit button
+ *******************************/
 .submit-btn {
   width: 100%;
   padding: 0.75rem;
@@ -56,6 +72,10 @@
   opacity: 0.9;
 }
 
+/*******************************
+ * VALIDATION & MESSAGES
+ * Error display
+ *******************************/
 .error-message {
   color: #dc3545;
   padding: 10px;
@@ -65,6 +85,10 @@
   background-color: #f8d7da;
 }
 
+/*******************************
+ * TOGGLE CONTROLS
+ * Button to switch between login/register
+ *******************************/
 .toggle-btn {
   background: none;
   border: none;

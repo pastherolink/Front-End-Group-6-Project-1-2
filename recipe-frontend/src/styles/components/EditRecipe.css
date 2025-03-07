@@ -1,3 +1,7 @@
+/*******************************
+ * MAIN CONTAINER
+ * Overall page layout
+ *******************************/
 .edit-recipe-container {
   display: flex;
   justify-content: center;
@@ -6,6 +10,10 @@
   min-height: calc(100vh - 80px);
 }
 
+/*******************************
+ * FORM CONTAINER
+ * Recipe form card
+ *******************************/
 .recipe-form {
   background: white;
   padding: 2rem;
@@ -15,6 +23,10 @@
   max-width: 800px;
 }
 
+/*******************************
+ * FORM FIELDS
+ * Input groups and controls
+ *******************************/
 .form-group {
   margin-bottom: 1.5rem;
 }
@@ -40,12 +52,17 @@
   resize: vertical;
 }
 
+/*******************************
+ * BUTTON CONTROLS
+ * Action buttons at form bottom
+ *******************************/
 .button-group {
   display: flex;
   gap: 1rem;
   margin-top: 2rem;
 }
 
+/* Primary action buttons */
 .save-btn,
 .cancel-btn {
   padding: 0.75rem 1.5rem;
@@ -71,6 +88,7 @@
   opacity: 0.9;
 }
 
+/* Danger actions */
 .delete-btn {
   background-color: #dc3545;
   color: white;

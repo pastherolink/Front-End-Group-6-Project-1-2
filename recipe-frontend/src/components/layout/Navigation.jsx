@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { ThemeContext } from '../../context/ThemeContext';
 import '../../styles/components/Navigation.css';
 
 const Navigation = () => {
+  const { theme, toggleTheme } = useContext(ThemeContext);
+  
   return (
     <nav className="main-nav" role="navigation" aria-label="Main navigation">
       <ul className="nav-list">
@@ -14,9 +17,10 @@ const Navigation = () => {
           <button 
             type="button" 
             className="theme-toggle"
+            onClick={toggleTheme}
             aria-label="Toggle dark/light mode"
           >
-            Toggle Theme
+            {theme === 'light' ? '🌙' : '☀️'} Toggle Theme
           </button>
         </li>
       </ul>

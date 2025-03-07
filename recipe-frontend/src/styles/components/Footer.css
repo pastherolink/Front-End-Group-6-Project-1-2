@@ -1,0 +1,104 @@
+/*******************************
+ * MAIN FOOTER CONTAINER
+ * Overall footer wrapper
+ *******************************/
+.main-footer {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 2rem 1rem;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 3rem;
+}
+
+/*******************************
+ * FOOTER CONTENT GRID
+ * Layout for footer sections
+ *******************************/
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+/*******************************
+ * FOOTER SECTIONS
+ * Individual content areas
+ *******************************/
+.footer-section h3 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+/*******************************
+ * FOOTER NAVIGATION
+ * Link lists in footer
+ *******************************/
+.footer-links {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+  color: white;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.footer-links a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/*******************************
+ * SOCIAL MEDIA LINKS
+ * Social media connection area
+ *******************************/
+.social-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-links a {
+  color: white;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.social-links a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/*******************************
+ * COPYRIGHT SECTION
+ * Bottom copyright and attribution
+ *******************************/
+.footer-bottom {
+  max-width: 1200px;
+  margin: 2rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/*******************************
+ * RESPONSIVE STYLES
+ * Adjustments for different devices
+ *******************************/
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
+  .social-links {
+    justify-content: center;
+  }
+}

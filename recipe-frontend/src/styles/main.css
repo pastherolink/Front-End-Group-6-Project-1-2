@@ -12,12 +12,6 @@ body {
   line-height: 1.6;
 }
 
-header {
-  background-color: var(--primary-color);
-  padding: var(--spacing);
-  color: white;
-}
-
 nav ul {
   list-style: none;
   display: flex;
@@ -51,10 +45,33 @@ label {
   font-weight: bold;
 }
 
-input, textarea {
+input, 
+textarea, 
+select {
   padding: 0.5rem;
-  border: 1px solid #ddd;
+  border: 1px solid #999; 
   border-radius: 4px;
+}
+
+/* Add focus state for better accessibility */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+/* Style for form groups */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+/* Add this if you want darker borders when there's validation errors */
+input.error,
+textarea.error,
+select.error {
+  border-color: #dc3545;
 }
 
 button {

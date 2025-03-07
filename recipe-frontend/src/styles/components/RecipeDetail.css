@@ -1,3 +1,7 @@
+/*******************************
+ * RECIPE DETAIL CONTAINER
+ * Main wrapper for the entire recipe detail page
+ *******************************/
 .recipe-detail {
   max-width: 800px;
   margin: 2rem auto;
@@ -8,57 +12,10 @@
   text-align: left;
 }
 
-.recipe-info {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin: 1.5rem 0;
-  padding: 1rem;
-  background-color: var(--secondary-color);
-  border-radius: 4px;
-}
-
-.recipe-ingredients, 
-.recipe-instructions {
-  margin-top: 2rem;
-  text-align: left;
-}
-
-.recipe-ingredients ul {
-  list-style-type: none;
-  padding-left: 0;
-  text-align: left;
-}
-
-.recipe-instructions ol {
-  padding-left: 1.5rem;
-  text-align: left;
-}
-
-.recipe-ingredients li,
-.recipe-instructions li {
-  margin-bottom: 0.8rem;
-  line-height: 1.6;
-  text-align: left;
-}
-
-.recipe-ingredients h3,
-.recipe-instructions h3 {
-  color: var(--primary-color);
-  margin: 1.5rem 0 1rem;
-  text-align: left;
-}
-
-/* Additional styles for better readability */
-.recipe-instructions ol li {
-  padding-left: 0.5rem;
-}
-
-.recipe-ingredients ul li {
-  padding-left: 0;
-  margin-left: 0;
-}
-
+/*******************************
+ * RECIPE HEADER
+ * Title area with edit button
+ *******************************/
 .recipe-header {
   display: flex;
   justify-content: space-between;
@@ -78,4 +35,74 @@
 
 .edit-recipe-link:hover {
   opacity: 0.9;
+}
+
+/*******************************
+ * RECIPE INFO SECTION
+ * Cooking time, difficulty, servings
+ *******************************/
+.recipe-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background-color: var(--secondary-color);
+  border-radius: 4px;
+}
+
+/*******************************
+ * RECIPE INGREDIENTS SECTION
+ * List of ingredients
+ *******************************/
+.recipe-ingredients {
+  margin-top: 2rem;
+  text-align: left;
+}
+
+.recipe-ingredients h3 {
+  color: var(--primary-color);
+  margin: 1.5rem 0 1rem;
+  text-align: left;
+}
+
+.recipe-ingredients ul {
+  list-style-type: none;
+  padding-left: 0;
+  text-align: left;
+}
+
+.recipe-ingredients ul li {
+  padding-left: 0;
+  margin-left: 0;
+  margin-bottom: 0.8rem;
+  line-height: 1.6;
+  text-align: left;
+}
+
+/*******************************
+ * RECIPE INSTRUCTIONS SECTION
+ * Step-by-step cooking instructions
+ *******************************/
+.recipe-instructions {
+  margin-top: 2rem;
+  text-align: left;
+}
+
+.recipe-instructions h3 {
+  color: var(--primary-color);
+  margin: 1.5rem 0 1rem;
+  text-align: left;
+}
+
+.recipe-instructions ol {
+  padding-left: 1.5rem;
+  text-align: left;
+}
+
+.recipe-instructions ol li {
+  padding-left: 0.5rem;
+  margin-bottom: 0.8rem;
+  line-height: 1.6;
+  text-align: left;
 }
