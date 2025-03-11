@@ -13,8 +13,15 @@ const RecipeList = () => {
     try {
       setLoading(true);
       const data = await GET('/recipes');
-      console.log('Fetched recipes:', data); // Debug the data
-      setRecipes(data);
+      console.log('Fetched recipes:', data);
+      
+      // Ensure each recipe has an id property
+      const processedData = data.map((recipe, index) => ({
+        ...recipe,
+        id: recipe.id || recipe._id || `recipe-${index}`
+      }));
+      
+      setRecipes(processedData);
       setLoading(false);
     } catch (err) {
       setError(err.message);
@@ -51,8 +58,8 @@ const RecipeList = () => {
     <section id="recipes">
       <h2>Recipes</h2>
       <div className="recipe-list">
-        {recipes && recipes.map(recipe => (
-          <div key={recipe.id || recipe._id} className="recipe-card">
+        {recipes && recipes.map((recipe, index) => (
+          <div key={recipe.id || recipe._id || `recipe-${index}`} className="recipe-card">
             <h3>{recipe.name}</h3>
             <div className="recipe-details">
               <p><strong>Cooking Time:</strong> {recipe.cookingTime}</p>
