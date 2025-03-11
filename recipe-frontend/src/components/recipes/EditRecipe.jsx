@@ -11,16 +11,14 @@ function EditRecipe() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Extract the numeric ID from URL parameter (which could be "2-vanilla-cake")
+  // Extract the numeric ID from URL parameter
   const extractId = () => {
     if (!id) return null;
     
-    // If it contains a dash (ID-slug format)
     if (id.includes('-')) {
       return id.split('-')[0]; // Get the number before the first dash
     }
     
-    // Otherwise just return the id as-is
     return id;
   };
   
@@ -30,7 +28,21 @@ function EditRecipe() {
     const fetchRecipe = async () => {
       try {
         const data = await GET(`/recipes/${numericId}`);
-        setRecipe(data);
+        console.log("Recipe data:", data); // Log to see what you're getting
+        
+        // Ensure all expected properties exist
+        const processedData = {
+          name: data.name || '',
+          cookingTime: data.cookingTime || '',
+          difficulty: data.difficulty || 'Medium',
+          servings: data.servings || 1,
+          ingredients: Array.isArray(data.ingredients) ? data.ingredients : [],
+          instructions: Array.isArray(data.instructions) ? data.instructions : [],
+          // Keep other properties
+          ...data
+        };
+        
+        setRecipe(processedData);
         setLoading(false);
       } catch (error) {
         console.error('Failed to fetch recipe:', error);
@@ -39,7 +51,12 @@ function EditRecipe() {
       }
     };
 
-    fetchRecipe();
+    if (numericId) {
+      fetchRecipe();
+    } else {
+      setError('Invalid recipe ID');
+      setLoading(false);
+    }
   }, [numericId]);
 
   const handleSubmit = async (e) => {
@@ -52,7 +69,9 @@ function EditRecipe() {
       difficulty: formData.get('difficulty'),
       servings: parseInt(formData.get('servings')),
       ingredients: formData.get('ingredients').split('\n').filter(i => i.trim()),
-      instructions: formData.get('instructions').split('\n').filter(i => i.trim())
+      instructions: formData.get('instructions').split('\n').filter(i => i.trim()),
+      // Keep the original userId
+      userId: recipe.userId || 1
     };
 
     try {
@@ -62,7 +81,8 @@ function EditRecipe() {
       const slug = createSlug(updatedRecipe.name);
       navigate(`/recipe/${numericId}-${slug}`);
     } catch (error) {
-      setError('Failed to update recipe');
+      console.error('Error updating recipe:', error);
+      setError(error.message || 'Failed to update recipe');
     }
   };
 
@@ -72,14 +92,15 @@ function EditRecipe() {
         await DELETE(`/recipes/${numericId}`);
         navigate('/recipes');
       } catch (err) {
-        setError(err.message);
+        console.error('Error deleting recipe:', err);
+        setError(err.message || 'Failed to delete recipe');
       }
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!recipe) return <div>Recipe not found</div>;
+  if (loading) return <div className="loading">Loading recipe data...</div>;
+  if (error) return <div className="error">Error: {error}</div>;
+  if (!recipe) return <div className="not-found">Recipe not found</div>;
 
   return (
     <div className="edit-recipe-container">
@@ -138,7 +159,7 @@ function EditRecipe() {
           <textarea 
             id="ingredients" 
             name="ingredients"
-            defaultValue={recipe.ingredients.join('\n')}
+            defaultValue={Array.isArray(recipe.ingredients) ? recipe.ingredients.join('\n') : ''}
             required
           ></textarea>
         </div>
@@ -148,7 +169,7 @@ function EditRecipe() {
           <textarea 
             id="instructions" 
             name="instructions"
-            defaultValue={recipe.instructions.join('\n')}
+            defaultValue={Array.isArray(recipe.instructions) ? recipe.instructions.join('\n') : ''}
             required
           ></textarea>
         </div>
