@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../../styles/components/EditRecipe.css';
 import { GET, PUT, DELETE } from '../../utils/api';
+import { createSlug } from '../../utils/helpers';
 
 function EditRecipe() {
   const { id } = useParams();
@@ -10,11 +11,78 @@ function EditRecipe() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Extract the numeric ID from URL parameter
+  const extractId = () => {
+    if (!id) return null;
+    
+    if (id.includes('-')) {
+      return id.split('-')[0]; // Get the number before the first dash
+    }
+    
+    return id;
+  };
+  
+  const numericId = extractId();
+
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
-        const data = await GET(`/recipes/${id}`);
-        setRecipe(data);
+        const data = await GET(`/recipes/${numericId}`);
+        console.log("Recipe data:", data);
+        
+        // Handle ingredients - might be array or JSON string
+        let ingredients = [];
+        if (data.ingredients) {
+          if (Array.isArray(data.ingredients)) {
+            // Already an array, use directly
+            ingredients = data.ingredients;
+          } else {
+            // Try to parse as JSON string
+            try {
+              ingredients = JSON.parse(data.ingredients);
+            } catch (e) {
+              console.warn('Failed to parse ingredients JSON:', e);
+              // If it's a string but not JSON, treat as a single item
+              if (typeof data.ingredients === 'string') {
+                ingredients = [data.ingredients];
+              }
+            }
+          }
+        }
+        
+        // Handle instructions - might be array or JSON string
+        let instructions = [];
+        if (data.instructions) {
+          if (Array.isArray(data.instructions)) {
+            // Already an array, use directly
+            instructions = data.instructions;
+          } else {
+            // Try to parse as JSON string
+            try {
+              instructions = JSON.parse(data.instructions);
+            } catch (e) {
+              console.warn('Failed to parse instructions JSON:', e);
+              // If it's a string but not JSON, treat as a single item
+              if (typeof data.instructions === 'string') {
+                instructions = [data.instructions];
+              }
+            }
+          }
+        }
+        
+        // Ensure all expected properties exist
+        const processedData = {
+          name: data.name || '',
+          cookingTime: data.cookingTime || '',
+          difficulty: data.difficulty || 'Medium',
+          servings: data.servings || 1,
+          ingredients: Array.isArray(ingredients) ? ingredients : [],
+          instructions: Array.isArray(instructions) ? instructions : [],
+          // Keep other properties
+          ...data
+        };
+        
+        setRecipe(processedData);
         setLoading(false);
       } catch (error) {
         console.error('Failed to fetch recipe:', error);
@@ -23,47 +91,79 @@ function EditRecipe() {
       }
     };
 
-    fetchRecipe();
-  }, [id]);
+    if (numericId) {
+      fetchRecipe();
+    } else {
+      setError('Invalid recipe ID');
+      setLoading(false);
+    }
+  }, [numericId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
     
-    const updatedRecipe = {
-      name: formData.get('recipe-name'),
-      cookingTime: formData.get('cooking-time'),
-      difficulty: formData.get('difficulty'),
-      servings: parseInt(formData.get('servings')),
-      ingredients: formData.get('ingredients').split('\n').filter(i => i.trim()),
-      instructions: formData.get('instructions').split('\n').filter(i => i.trim())
-    };
-
+    // Create a deep copy to avoid modifying state directly
+    const recipeToSubmit = {...recipe};
+    
+    // Process form values from the form elements
+    const formElements = e.target.elements;
+    
+    recipeToSubmit.name = formElements['recipe-name'].value;
+    recipeToSubmit.cookingTime = formElements['cooking-time'].value;
+    recipeToSubmit.difficulty = formElements.difficulty.value;
+    recipeToSubmit.servings = parseInt(formElements.servings.value, 10);
+    
+    // Handle ingredients and instructions from textareas
+    const ingredientsText = formElements.ingredients.value;
+    const instructionsText = formElements.instructions.value;
+    
+    // Split by newlines and filter empty lines
+    recipeToSubmit.ingredients = ingredientsText
+      .split('\n')
+      .filter(item => item.trim() !== '');
+    
+    recipeToSubmit.instructions = instructionsText
+      .split('\n')
+      .filter(item => item.trim() !== '');
+    
+    // Ensure ingredients and instructions are properly formatted for API
+    recipeToSubmit.ingredients = JSON.stringify(recipeToSubmit.ingredients);
+    recipeToSubmit.instructions = JSON.stringify(recipeToSubmit.instructions);
+    
+    console.log("Sending recipe update:", recipeToSubmit);
+    
     try {
-      await PUT(`/recipes/${id}`, updatedRecipe);
-      navigate(`/recipe/${id}`);
+      await PUT(`/recipes/${numericId}`, recipeToSubmit);
+      
+      // When successful, navigate back with a SEO-friendly URL
+      const slug = createSlug(recipeToSubmit.name);
+      navigate(`/recipe/${numericId}-${slug}`);
     } catch (error) {
-      setError('Failed to update recipe');
+      console.error("Error updating recipe:", error);
+      setError(`Failed to update recipe: ${error.message}`);
     }
   };
 
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this recipe?')) {
       try {
-        await DELETE(`/recipes/${id}`);
+        await DELETE(`/recipes/${numericId}`);
         navigate('/recipes');
       } catch (err) {
-        setError(err.message);
+        console.error('Error deleting recipe:', err);
+        setError(err.message || 'Failed to delete recipe');
       }
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!recipe) return <div>Recipe not found</div>;
+  if (loading) return <div className="loading">Loading recipe data...</div>;
+  if (error) return <div className="error">Error: {error}</div>;
+  if (!recipe) return <div className="not-found">Recipe not found</div>;
 
   return (
     <div className="edit-recipe-container">
+      {error && <div className="error-message">{error}</div>}
+      
       <form className="recipe-form" onSubmit={handleSubmit}>
         <h2>Edit Recipe</h2>
         
@@ -119,7 +219,7 @@ function EditRecipe() {
           <textarea 
             id="ingredients" 
             name="ingredients"
-            defaultValue={recipe.ingredients.join('\n')}
+            defaultValue={Array.isArray(recipe.ingredients) ? recipe.ingredients.join('\n') : ''}
             required
           ></textarea>
         </div>
@@ -129,7 +229,7 @@ function EditRecipe() {
           <textarea 
             id="instructions" 
             name="instructions"
-            defaultValue={recipe.instructions.join('\n')}
+            defaultValue={Array.isArray(recipe.instructions) ? recipe.instructions.join('\n') : ''}
             required
           ></textarea>
         </div>
@@ -139,7 +239,11 @@ function EditRecipe() {
           <button 
             type="button" 
             className="cancel-btn"
-            onClick={() => navigate(`/recipe/${id}`)}
+            onClick={() => {
+              // When canceling, navigate back with a SEO-friendly URL
+              const slug = createSlug(recipe.name);
+              navigate(`/recipe/${numericId}-${slug}`);
+            }}
           >
             Cancel
           </button>

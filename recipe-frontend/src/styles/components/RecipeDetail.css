@@ -106,3 +106,54 @@
   line-height: 1.6;
   text-align: left;
 }
+
+/*******************************
+ * RECIPE STATUS SECTION
+ * Status messages for the recipe
+ *******************************/
+.recipe-status {
+  padding: 20px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.recipe-status.error {
+  color: #d32f2f;
+}
+
+.recipe-status.not-found {
+  color: #f57c00;
+}
+
+/*******************************
+ * RECIPE ACTIONS SECTION
+ * Action buttons for the recipe
+ *******************************/
+.recipe-actions {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.back-to-recipes {
+  padding: 8px 15px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.empty-list {
+  color: #757575;
+  font-style: italic;
+}
+
+.incomplete-recipe-notice {
+  margin-top: 30px;
+  padding: 15px;
+  background-color: #fffde7;
+  border: 1px solid #fff9c4;
+  border-radius: 4px;
+  color: #f57f17;
+}
