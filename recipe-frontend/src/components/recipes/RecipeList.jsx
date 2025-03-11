@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../../styles/components/RecipeList.css';
+import { Link, useNavigate } from 'react-router-dom';
 import { GET, DELETE } from '../../utils/api';
 import { createSlug } from '../../utils/helpers';
+import '../../styles/components/RecipeList.css';
 
 const RecipeList = () => {
-  const navigate = useNavigate();
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    fetchRecipes();
+  }, []);
+  
   const fetchRecipes = async () => {
     try {
       setLoading(true);
@@ -25,14 +29,15 @@ const RecipeList = () => {
       setRecipes(processedData);
       setLoading(false);
     } catch (err) {
+      console.error('Failed to fetch recipes:', err);
       setError(err.message);
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchRecipes();
-  }, []);
+  
+  const handleCreateRecipe = () => {
+    navigate('/create-recipe');
+  };
 
   const handleViewRecipe = (recipe) => {
     const slug = createSlug(recipe.name);
@@ -49,41 +54,69 @@ const RecipeList = () => {
       console.error('Failed to delete recipe:', error);
     }
   };
-
+  
+  // Show loading state
   if (loading) {
-    return <div>Loading recipes...</div>;
+    return <div className="recipes-loading">Loading recipes...</div>;
   }
-
+  
+  // Show error state
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <div className="recipes-error">
+        <h2>Error Loading Recipes</h2>
+        <p>{error}</p>
+        <button onClick={fetchRecipes}>Try Again</button>
+      </div>
+    );
   }
-
+  
   return (
     <section id="recipes">
-      <h2>Recipes</h2>
-      <div className="recipe-list">
-        {recipes && recipes.map((recipe) => (
-          <div key={recipe.recipeId} className="recipe-card">
-            <h3>{recipe.name}</h3>
-            <div className="recipe-details">
-              <p><strong>Cooking Time:</strong> {recipe.cookingTime}</p>
-              <p><strong>Difficulty:</strong> {recipe.difficulty}</p>
-            </div>
-            <button 
-              className="view-recipe-btn"
-              onClick={() => handleViewRecipe(recipe)}
-            >
-              View Recipe
-            </button>
-            <button 
-              className="delete-recipe-btn"
-              onClick={() => handleDelete(recipe.recipeId)}
-            >
-              Delete Recipe
-            </button>
-          </div>
-        ))}
+      <div className="recipes-header">
+        <h2>Your Recipes</h2>
+        <button 
+          onClick={handleCreateRecipe}
+          className="create-recipe-button"
+        >
+          Create New Recipe
+        </button>
       </div>
+      
+      {recipes.length === 0 ? (
+        <div className="no-recipes">
+          <p>You haven't created any recipes yet!</p>
+          <p>Get started by creating your first recipe.</p>
+          <button 
+            onClick={handleCreateRecipe}
+            className="create-first-recipe-button"
+          >
+            Create Your First Recipe
+          </button>
+        </div>
+      ) : (
+        <div className="recipe-list">
+          {recipes.map(recipe => (
+            <div key={recipe.recipeId} className="recipe-card">
+              <h3>{recipe.name}</h3>
+              <div className="recipe-card-actions">
+                <button 
+                  onClick={() => handleViewRecipe(recipe)}
+                  className="view-recipe-button"
+                >
+                  View Recipe
+                </button>
+                <button 
+                  className="delete-recipe-btn"
+                  onClick={() => handleDelete(recipe.recipeId)}
+                >
+                  Delete Recipe
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 };

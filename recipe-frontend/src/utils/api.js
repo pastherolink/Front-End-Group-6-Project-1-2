@@ -3,34 +3,28 @@ const DEFAULT_USER_ID = 1; // For testing without authentication
 
 // Helper function to handle responses
 const handleResponse = async (response) => {
-  // Check if the response is ok (status in the range 200-299)
   if (!response.ok) {
-    // Try to get error details from response
-    let errorMessage;
-    try {
-      // Try to parse as JSON
-      const errorData = await response.json();
-      errorMessage = errorData.message || errorData.error || `Error: ${response.status}`;
-    } catch (e) {
-      // If parsing fails, get text content
-      try {
-        errorMessage = await response.text();
-      } catch (textError) {
-        // Fallback if even text extraction fails
-        errorMessage = `HTTP error! Status: ${response.status}`;
-      }
+    const errorText = await response.text();
+    console.error('API error response:', errorText);
+    
+    if (response.status === 500) {
+      throw new Error("Internal Server Error: " + errorText);
+    } else if (response.status === 400) {
+      throw new Error("Bad Request: " + errorText);
+    } else if (response.status === 404) {
+      throw new Error("Not Found");
+    } else {
+      throw new Error(errorText || response.statusText);
     }
-    throw new Error(errorMessage);
   }
   
-  // Check if the response has content
-  const contentType = response.headers.get('content-type');
-  if (contentType && contentType.includes('application/json')) {
-    return response.json();
-  } else {
-    // Some successful responses might not have JSON content
-    return response.text();
+  // Check if there's a response body
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("application/json")) {
+    return await response.json();
   }
+  
+  return await response.text();
 };
 
 export const GET = (endpoint) => {

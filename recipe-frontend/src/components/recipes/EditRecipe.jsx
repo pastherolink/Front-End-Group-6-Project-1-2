@@ -28,7 +28,47 @@ function EditRecipe() {
     const fetchRecipe = async () => {
       try {
         const data = await GET(`/recipes/${numericId}`);
-        console.log("Recipe data:", data); // Log to see what you're getting
+        console.log("Recipe data:", data);
+        
+        // Handle ingredients - might be array or JSON string
+        let ingredients = [];
+        if (data.ingredients) {
+          if (Array.isArray(data.ingredients)) {
+            // Already an array, use directly
+            ingredients = data.ingredients;
+          } else {
+            // Try to parse as JSON string
+            try {
+              ingredients = JSON.parse(data.ingredients);
+            } catch (e) {
+              console.warn('Failed to parse ingredients JSON:', e);
+              // If it's a string but not JSON, treat as a single item
+              if (typeof data.ingredients === 'string') {
+                ingredients = [data.ingredients];
+              }
+            }
+          }
+        }
+        
+        // Handle instructions - might be array or JSON string
+        let instructions = [];
+        if (data.instructions) {
+          if (Array.isArray(data.instructions)) {
+            // Already an array, use directly
+            instructions = data.instructions;
+          } else {
+            // Try to parse as JSON string
+            try {
+              instructions = JSON.parse(data.instructions);
+            } catch (e) {
+              console.warn('Failed to parse instructions JSON:', e);
+              // If it's a string but not JSON, treat as a single item
+              if (typeof data.instructions === 'string') {
+                instructions = [data.instructions];
+              }
+            }
+          }
+        }
         
         // Ensure all expected properties exist
         const processedData = {
@@ -36,8 +76,8 @@ function EditRecipe() {
           cookingTime: data.cookingTime || '',
           difficulty: data.difficulty || 'Medium',
           servings: data.servings || 1,
-          ingredients: Array.isArray(data.ingredients) ? data.ingredients : [],
-          instructions: Array.isArray(data.instructions) ? data.instructions : [],
+          ingredients: Array.isArray(ingredients) ? ingredients : [],
+          instructions: Array.isArray(instructions) ? instructions : [],
           // Keep other properties
           ...data
         };
@@ -61,28 +101,46 @@ function EditRecipe() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
     
-    const updatedRecipe = {
-      name: formData.get('recipe-name'),
-      cookingTime: formData.get('cooking-time'),
-      difficulty: formData.get('difficulty'),
-      servings: parseInt(formData.get('servings')),
-      ingredients: formData.get('ingredients').split('\n').filter(i => i.trim()),
-      instructions: formData.get('instructions').split('\n').filter(i => i.trim()),
-      // Keep the original userId
-      userId: recipe.userId || 1
-    };
-
+    // Create a deep copy to avoid modifying state directly
+    const recipeToSubmit = {...recipe};
+    
+    // Process form values from the form elements
+    const formElements = e.target.elements;
+    
+    recipeToSubmit.name = formElements['recipe-name'].value;
+    recipeToSubmit.cookingTime = formElements['cooking-time'].value;
+    recipeToSubmit.difficulty = formElements.difficulty.value;
+    recipeToSubmit.servings = parseInt(formElements.servings.value, 10);
+    
+    // Handle ingredients and instructions from textareas
+    const ingredientsText = formElements.ingredients.value;
+    const instructionsText = formElements.instructions.value;
+    
+    // Split by newlines and filter empty lines
+    recipeToSubmit.ingredients = ingredientsText
+      .split('\n')
+      .filter(item => item.trim() !== '');
+    
+    recipeToSubmit.instructions = instructionsText
+      .split('\n')
+      .filter(item => item.trim() !== '');
+    
+    // Ensure ingredients and instructions are properly formatted for API
+    recipeToSubmit.ingredients = JSON.stringify(recipeToSubmit.ingredients);
+    recipeToSubmit.instructions = JSON.stringify(recipeToSubmit.instructions);
+    
+    console.log("Sending recipe update:", recipeToSubmit);
+    
     try {
-      await PUT(`/recipes/${numericId}`, updatedRecipe);
+      await PUT(`/recipes/${numericId}`, recipeToSubmit);
       
-      // Create a SEO-friendly URL with the updated recipe name
-      const slug = createSlug(updatedRecipe.name);
+      // When successful, navigate back with a SEO-friendly URL
+      const slug = createSlug(recipeToSubmit.name);
       navigate(`/recipe/${numericId}-${slug}`);
     } catch (error) {
-      console.error('Error updating recipe:', error);
-      setError(error.message || 'Failed to update recipe');
+      console.error("Error updating recipe:", error);
+      setError(`Failed to update recipe: ${error.message}`);
     }
   };
 
@@ -104,6 +162,8 @@ function EditRecipe() {
 
   return (
     <div className="edit-recipe-container">
+      {error && <div className="error-message">{error}</div>}
+      
       <form className="recipe-form" onSubmit={handleSubmit}>
         <h2>Edit Recipe</h2>
         

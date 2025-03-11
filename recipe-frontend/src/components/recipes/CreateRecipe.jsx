@@ -1,38 +1,62 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/components/CreateRecipe.css';
 import { POST } from '../../utils/api';
+import { createSlug } from '../../utils/helpers';
+import '../../styles/components/CreateRecipe.css';
 
 const CreateRecipe = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
+  // Ensure ingredients and instructions are properly formatted for API
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
     
-    const newRecipe = {
-      name: formData.get('recipe-name'),
-      cookingTime: formData.get('cooking-time'),
-      difficulty: formData.get('difficulty'),
-      servings: parseInt(formData.get('servings')),
-      ingredients: formData.get('ingredients').split('\n').filter(i => i.trim()),
-      instructions: formData.get('instructions').split('\n').filter(i => i.trim())
+    // Get form values
+    const formElements = e.target.elements;
+    
+    // Create recipe object from form values
+    const recipe = {
+      name: formElements['recipe-name'].value,
+      userId: 1, // Hard-coded user ID or get from auth
+      cookingTime: formElements['cooking-time'].value,
+      difficulty: formElements.difficulty.value,
+      servings: parseInt(formElements.servings.value, 10),
+      ingredients: formElements.ingredients.value
+        .split('\n')
+        .filter(item => item.trim() !== ''),
+      instructions: formElements.instructions.value
+        .split('\n')
+        .filter(item => item.trim() !== '')
     };
-
+    
+    // Stringify arrays for API
+    const recipeToSubmit = {
+      ...recipe,
+      ingredients: JSON.stringify(recipe.ingredients),
+      instructions: JSON.stringify(recipe.instructions)
+    };
+    
+    console.log("Submitting recipe:", recipeToSubmit);
+    
     try {
-      await POST('/recipes', newRecipe);
+      const response = await POST('/recipes', recipeToSubmit);
+      
+      // Navigate to recipe page with SEO-friendly URL
       navigate('/recipes');
     } catch (error) {
-      setError('Failed to create recipe');
+      console.error("Failed to create recipe:", error);
+      setError(error.message);
     }
   };
 
   return (
     <div className="create-recipe-container">
       {error && <div className="error-message">{error}</div>}
+      
       <form className="recipe-form" onSubmit={handleSubmit}>
-        <h2>Create Recipe</h2>
+        <h2>Create New Recipe</h2>
         
         <div className="form-group">
           <label htmlFor="recipe-name">Recipe Name:</label>
@@ -41,6 +65,7 @@ const CreateRecipe = () => {
             id="recipe-name" 
             name="recipe-name" 
             required 
+            placeholder="e.g., Chocolate Chip Cookies"
           />
         </div>
 
@@ -50,8 +75,8 @@ const CreateRecipe = () => {
             type="text" 
             id="cooking-time" 
             name="cooking-time" 
-            placeholder="e.g., 30 minutes" 
             required 
+            placeholder="e.g., 30 minutes"
           />
         </div>
 
@@ -59,8 +84,8 @@ const CreateRecipe = () => {
           <label htmlFor="difficulty">Difficulty:</label>
           <select 
             id="difficulty" 
-            name="difficulty"
-            required
+            name="difficulty" 
+            defaultValue="Medium"
           >
             <option value="Easy">Easy</option>
             <option value="Medium">Medium</option>
@@ -75,6 +100,7 @@ const CreateRecipe = () => {
             id="servings" 
             name="servings" 
             min="1" 
+            defaultValue="4"
             required 
           />
         </div>
@@ -85,7 +111,10 @@ const CreateRecipe = () => {
             id="ingredients" 
             name="ingredients" 
             required
-            placeholder="Enter each ingredient on a new line"
+            placeholder="2 cups flour
+1 cup sugar
+1/2 cup butter
+..."
           ></textarea>
         </div>
 
@@ -95,13 +124,20 @@ const CreateRecipe = () => {
             id="instructions" 
             name="instructions" 
             required
-            placeholder="Enter each step on a new line"
+            placeholder="Preheat oven to 350°F
+Mix dry ingredients
+Add wet ingredients
+..."
           ></textarea>
         </div>
 
         <div className="button-group">
-          <button type="submit" className="submit-btn">
-            Create Recipe
+          <button 
+            type="submit" 
+            className="submit-btn" 
+            disabled={submitting}
+          >
+            {submitting ? 'Creating...' : 'Create Recipe'}
           </button>
           <button 
             type="button" 

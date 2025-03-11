@@ -47,7 +47,51 @@ const RecipeDetail = () => {
           return;
         }
         
-        setRecipe(data);
+        // Handle ingredients - might be array or JSON string
+        let ingredients = [];
+        if (data.ingredients) {
+          if (Array.isArray(data.ingredients)) {
+            ingredients = data.ingredients;
+          } else {
+            try {
+              ingredients = JSON.parse(data.ingredients);
+            } catch (e) {
+              console.warn('Failed to parse ingredients JSON:', e);
+              if (typeof data.ingredients === 'string') {
+                ingredients = [data.ingredients];
+              }
+            }
+          }
+        }
+        
+        // Handle instructions - might be array or JSON string
+        let instructions = [];
+        if (data.instructions) {
+          if (Array.isArray(data.instructions)) {
+            instructions = data.instructions;
+          } else {
+            try {
+              instructions = JSON.parse(data.instructions);
+            } catch (e) {
+              console.warn('Failed to parse instructions JSON:', e);
+              if (typeof data.instructions === 'string') {
+                instructions = [data.instructions];
+              }
+            }
+          }
+        }
+        
+        // Create a complete recipe object with processed data
+        const processedRecipe = {
+          ...data,
+          ingredients: ingredients,
+          instructions: instructions,
+          cookingTime: data.cookingTime || 'Not specified',
+          difficulty: data.difficulty || 'Not specified',
+          servings: data.servings || 'Not specified'
+        };
+        
+        setRecipe(processedRecipe);
         
         // Optional: Update URL if it doesn't include the slug
         if (data.name && !recipeId.includes('-')) {
