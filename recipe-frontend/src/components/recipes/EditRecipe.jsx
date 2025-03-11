@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../../styles/components/EditRecipe.css';
 import { GET, PUT, DELETE } from '../../utils/api';
+import { createSlug } from '../../utils/helpers';
 
 function EditRecipe() {
   const { id } = useParams();
@@ -10,10 +11,25 @@ function EditRecipe() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Extract the numeric ID from URL parameter (which could be "2-vanilla-cake")
+  const extractId = () => {
+    if (!id) return null;
+    
+    // If it contains a dash (ID-slug format)
+    if (id.includes('-')) {
+      return id.split('-')[0]; // Get the number before the first dash
+    }
+    
+    // Otherwise just return the id as-is
+    return id;
+  };
+  
+  const numericId = extractId();
+
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
-        const data = await GET(`/recipes/${id}`);
+        const data = await GET(`/recipes/${numericId}`);
         setRecipe(data);
         setLoading(false);
       } catch (error) {
@@ -24,7 +40,7 @@ function EditRecipe() {
     };
 
     fetchRecipe();
-  }, [id]);
+  }, [numericId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,8 +56,11 @@ function EditRecipe() {
     };
 
     try {
-      await PUT(`/recipes/${id}`, updatedRecipe);
-      navigate(`/recipe/${id}`);
+      await PUT(`/recipes/${numericId}`, updatedRecipe);
+      
+      // Create a SEO-friendly URL with the updated recipe name
+      const slug = createSlug(updatedRecipe.name);
+      navigate(`/recipe/${numericId}-${slug}`);
     } catch (error) {
       setError('Failed to update recipe');
     }
@@ -50,7 +69,7 @@ function EditRecipe() {
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this recipe?')) {
       try {
-        await DELETE(`/recipes/${id}`);
+        await DELETE(`/recipes/${numericId}`);
         navigate('/recipes');
       } catch (err) {
         setError(err.message);
@@ -139,7 +158,11 @@ function EditRecipe() {
           <button 
             type="button" 
             className="cancel-btn"
-            onClick={() => navigate(`/recipe/${id}`)}
+            onClick={() => {
+              // When canceling, navigate back with a SEO-friendly URL
+              const slug = createSlug(recipe.name);
+              navigate(`/recipe/${numericId}-${slug}`);
+            }}
           >
             Cancel
           </button>
