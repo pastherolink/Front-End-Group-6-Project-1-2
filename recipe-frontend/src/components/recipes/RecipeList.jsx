@@ -9,18 +9,20 @@ const RecipeList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      try {
-        const data = await GET('/recipes');
-        setRecipes(data);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
+  const fetchRecipes = async () => {
+    try {
+      setLoading(true);
+      const data = await GET('/recipes');
+      console.log('Fetched recipes:', data); // Debug the data
+      setRecipes(data);
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchRecipes();
   }, []);
 
@@ -49,8 +51,8 @@ const RecipeList = () => {
     <section id="recipes">
       <h2>Recipes</h2>
       <div className="recipe-list">
-        {recipes.map(recipe => (
-          <div key={recipe.id} className="recipe-card">
+        {recipes && recipes.map(recipe => (
+          <div key={recipe.id || recipe._id} className="recipe-card">
             <h3>{recipe.name}</h3>
             <div className="recipe-details">
               <p><strong>Cooking Time:</strong> {recipe.cookingTime}</p>
@@ -58,13 +60,13 @@ const RecipeList = () => {
             </div>
             <button 
               className="view-recipe-btn"
-              onClick={() => handleViewRecipe(recipe.id)}
+              onClick={() => handleViewRecipe(recipe.id || recipe._id)}
             >
               View Recipe
             </button>
             <button 
               className="delete-recipe-btn"
-              onClick={() => handleDelete(recipe.id)}
+              onClick={() => handleDelete(recipe.id || recipe._id)}
             >
               Delete Recipe
             </button>
