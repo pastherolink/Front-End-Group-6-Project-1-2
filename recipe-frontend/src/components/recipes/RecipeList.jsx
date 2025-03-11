@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/components/RecipeList.css';
 import { GET, DELETE } from '../../utils/api';
+import { createSlug } from '../../utils/helpers';
 
 const RecipeList = () => {
   const navigate = useNavigate();
@@ -15,10 +16,10 @@ const RecipeList = () => {
       const data = await GET('/recipes');
       console.log('Fetched recipes:', data);
       
-      // Ensure each recipe has an id property
-      const processedData = data.map((recipe, index) => ({
+      // Ensure each recipe has an id property that matches the API's recipeId
+      const processedData = data.map((recipe) => ({
         ...recipe,
-        id: recipe.id || recipe._id || `recipe-${index}`
+        id: recipe.recipeId // Use the API's recipeId field
       }));
       
       setRecipes(processedData);
@@ -33,12 +34,15 @@ const RecipeList = () => {
     fetchRecipes();
   }, []);
 
-  const handleViewRecipe = (id) => {
-    navigate(`/recipe/${id}`);
+  const handleViewRecipe = (recipe) => {
+    const slug = createSlug(recipe.name);
+    // Use both ID and slug for navigation: /recipe/2-vanilla-cake
+    navigate(`/recipe/${recipe.recipeId}-${slug}`);
   };
 
   const handleDelete = async (id) => {
     try {
+      // When deleting, use just the numeric ID for the API call
       await DELETE(`/recipes/${id}`);
       fetchRecipes(); // Refresh the list
     } catch (error) {
@@ -58,8 +62,8 @@ const RecipeList = () => {
     <section id="recipes">
       <h2>Recipes</h2>
       <div className="recipe-list">
-        {recipes && recipes.map((recipe, index) => (
-          <div key={recipe.id || recipe._id || `recipe-${index}`} className="recipe-card">
+        {recipes && recipes.map((recipe) => (
+          <div key={recipe.recipeId} className="recipe-card">
             <h3>{recipe.name}</h3>
             <div className="recipe-details">
               <p><strong>Cooking Time:</strong> {recipe.cookingTime}</p>
@@ -67,13 +71,13 @@ const RecipeList = () => {
             </div>
             <button 
               className="view-recipe-btn"
-              onClick={() => handleViewRecipe(recipe.id || recipe._id)}
+              onClick={() => handleViewRecipe(recipe)}
             >
               View Recipe
             </button>
             <button 
               className="delete-recipe-btn"
-              onClick={() => handleDelete(recipe.id || recipe._id)}
+              onClick={() => handleDelete(recipe.recipeId)}
             >
               Delete Recipe
             </button>

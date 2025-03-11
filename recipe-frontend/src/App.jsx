@@ -21,7 +21,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/recipes" element={<RecipeList />} />
-              <Route path="/recipe/:id" element={<RecipeDetail />} />
+              {/* Updated route pattern to match ID-slug format */}
+              <Route path="/recipe/:recipeId" element={<RecipeDetail />} />
               <Route path="/create-recipe" element={<CreateRecipe />} />
               <Route path="/recipe/edit/:id" element={<EditRecipe />} />
               <Route path="/auth" element={<AuthForm />} />
