@@ -39,7 +39,7 @@ const RecipeDetail = () => {
         console.log(`Fetching recipe with ID: ${numericId}`);
         
         const data = await GET(`/recipes/${numericId}`);
-        console.log('Recipe data received:', data);
+        console.log('Raw recipe data:', JSON.stringify(data, null, 2));
         
         if (!data) {
           setError('Recipe not found');
