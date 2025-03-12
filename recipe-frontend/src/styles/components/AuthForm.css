@@ -85,6 +85,15 @@
   background-color: #f8d7da;
 }
 
+.success-message {
+  color: #28a745;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #28a745;
+  border-radius: 4px;
+  background-color: #d4edda;
+}
+
 /*******************************
  * TOGGLE CONTROLS
  * Button to switch between login/register

@@ -41,8 +41,8 @@ const RecipeDetail = () => {
         const data = await GET(`/recipes/${numericId}`);
         console.log('Raw recipe data:', JSON.stringify(data, null, 2));
         
-        if (!data) {
-          setError('Recipe not found');
+        if (!data || !data.name) {
+          setError('Recipe not found or invalid data received');
           setLoading(false);
           return;
         }
@@ -118,11 +118,23 @@ const RecipeDetail = () => {
 
   // Update the edit link to use the slug format
   const generateEditUrl = () => {
-    if (recipe && recipe.name) {
+    // Make sure we use either a valid recipe ID or the extracted numeric ID
+    const id = (recipe && recipe.recipeId) ? recipe.recipeId : numericId;
+    
+    if (recipe && recipe.name && id) {
       const slug = createSlug(recipe.name);
-      return `/recipe/edit/${numericId}-${slug}`;
+      const editUrl = `/recipe/edit/${id}-${slug}`;
+      console.log("RecipeDetail: Generated edit URL:", editUrl);
+      return editUrl;
     }
-    return `/recipe/edit/${numericId}`;
+    if (id) {
+      const defaultUrl = `/recipe/edit/${id}`;
+      console.log("RecipeDetail: Generated default edit URL:", defaultUrl);
+      return defaultUrl;
+    }
+    // Fallback to recipes list if we don't have an ID
+    console.warn("RecipeDetail: No valid recipe ID found, redirecting to recipes list");
+    return '/recipes';
   };
   
   // Your existing return statement with the updated edit link

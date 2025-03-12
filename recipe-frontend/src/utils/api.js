@@ -1,18 +1,21 @@
 const API_URL = import.meta.env?.VITE_API_URL || 'http://localhost:8080/api';
 const DEFAULT_USER_ID = 1; // For testing without authentication
 
-// Helper function to handle responses
+// Enhanced error handler
 const handleResponse = async (response) => {
+  const url = response.url;
+  console.log(`Processing response from: ${url}, status: ${response.status}`);
+  
   if (!response.ok) {
     const errorText = await response.text();
-    console.error('API error response:', errorText);
+    console.error(`API error response (${response.status}) for ${url}:`, errorText);
     
-    if (response.status === 500) {
+    if (response.status === 404) {
+      throw new Error(`Resource not found: ${url} - ${errorText || 'No additional error information'}`);
+    } else if (response.status === 500) {
       throw new Error("Internal Server Error: " + errorText);
     } else if (response.status === 400) {
       throw new Error("Bad Request: " + errorText);
-    } else if (response.status === 404) {
-      throw new Error("Not Found");
     } else {
       throw new Error(errorText || response.statusText);
     }
@@ -21,13 +24,19 @@ const handleResponse = async (response) => {
   // Check if there's a response body
   const contentType = response.headers.get("content-type");
   if (contentType && contentType.includes("application/json")) {
-    return await response.json();
+    const json = await response.json();
+    console.log(`API JSON Response for ${url}:`, json);
+    return json;
   }
   
-  return await response.text();
+  const text = await response.text();
+  console.log(`API Text Response for ${url}:`, text);
+  return text;
 };
 
 export const GET = (endpoint) => {
+  console.log(`API GET Request: ${API_URL}${endpoint}`);
+  
   return fetch(`${API_URL}${endpoint}`, {
     method: 'GET',
     headers: {
@@ -35,9 +44,12 @@ export const GET = (endpoint) => {
     },
     credentials: 'include'
   })
-    .then(handleResponse)
+    .then(response => {
+      console.log(`API GET Response Status: ${response.status} ${response.statusText} for ${endpoint}`);
+      return handleResponse(response);
+    })
     .catch((err) => {
-      console.error('Error calling API:', err);
+      console.error(`API GET Error for ${endpoint}:`, err);
       throw err;
     });
 };

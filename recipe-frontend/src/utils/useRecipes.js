@@ -21,7 +21,9 @@ export function useRecipes() {
   const getRecipeById = useCallback(async (id) => {
     setLoading(true);
     try {
-      const data = await GET(`/recipes/${id}`);
+      // Extract just the numeric part if it includes a dash
+      const numericId = id.toString().split('-')[0];
+      const data = await GET(`/recipes/${numericId}`);
       setLoading(false);
       return data;
     } catch (err) {
@@ -47,7 +49,9 @@ export function useRecipes() {
   const updateRecipe = useCallback(async (id, recipeData) => {
     setLoading(true);
     try {
-      const data = await PUT(`/recipes/${id}`, recipeData);
+      // Extract just the numeric part if it includes a dash
+      const numericId = id.toString().split('-')[0];
+      const data = await PUT(`/recipes/${numericId}`, recipeData);
       setLoading(false);
       return data;
     } catch (err) {

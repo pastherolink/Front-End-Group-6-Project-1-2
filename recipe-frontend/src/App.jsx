@@ -1,37 +1,95 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/layout/Header';
+import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
+import ProtectedRoute from './components/routes/ProtectedRoute';
+import Navigation from './components/layout/Navigation';
 import Footer from './components/layout/Footer';
-import Home from './components/Home';
-import RecipeList from './components/recipes/RecipeList';
-import RecipeDetail from './components/recipes/RecipeDetail';
-import CreateRecipe from './components/recipes/CreateRecipe';
+import HomePage from './components/pages/HomePage';
+import RecipesPage from './components/pages/RecipesPage';
+import RecipeDetailsPage from './components/pages/RecipeDetailsPage';
+import CreateRecipePage from './components/pages/CreateRecipePage';
 import EditRecipe from './components/recipes/EditRecipe';
 import AuthForm from './components/auth/AuthForm';
-import { ThemeProvider } from './context/ThemeContext';
+import './styles/main.css';
 import './styles/global.css';
+import './styles/App.css';
+
+// Create a wrapper component to apply the theme
+const ThemedApp = () => {
+  const { theme } = useTheme();
+  
+  useEffect(() => {
+    // Set the theme class on the body element
+    document.body.className = theme;
+  }, [theme]);
+
+  return (
+    <div className="app">
+      <Navigation />
+      <main className="content">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<AuthForm type="login" />} />
+          <Route path="/register" element={<AuthForm type="register" />} />
+          <Route 
+            path="/recipes" 
+            element={
+              <ProtectedRoute>
+                <RecipesPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/recipe/:id" 
+            element={
+              <ProtectedRoute>
+                <RecipeDetailsPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/create-recipe" 
+            element={
+              <ProtectedRoute>
+                <CreateRecipePage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/recipe/edit/:id" 
+            element={
+              <ProtectedRoute>
+                <EditRecipe />
+              </ProtectedRoute>
+            } 
+          />
+          {/* Catch-all route for 404 errors */}
+          <Route 
+            path="*" 
+            element={
+              <div className="not-found">
+                <h2>404 - Page Not Found</h2>
+                <p>The page you are looking for does not exist.</p>
+              </div>
+            } 
+          />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
+  );
+};
 
 function App() {
   return (
-    <ThemeProvider>
-      <Router>
-        <div>
-          <Header />
-          <main>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/recipes" element={<RecipeList />} />
-              {/* Updated route pattern to match ID-slug format */}
-              <Route path="/recipe/:recipeId" element={<RecipeDetail />} />
-              <Route path="/create-recipe" element={<CreateRecipe />} />
-              <Route path="/recipe/edit/:id" element={<EditRecipe />} />
-              <Route path="/auth" element={<AuthForm />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <Router>
+          <ThemedApp />
+        </Router>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
 

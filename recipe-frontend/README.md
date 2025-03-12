@@ -1,109 +1,61 @@
-# Recipe Management Application
+# Recipe App Frontend
 
-## Tech Stack & Dependencies
+The React frontend (built with Vite) for our Recipe Management application.
 
-### Frontend
-- React 18 + Vite
-- React Router for navigation
-- CSS for styling
+## Prerequisites
 
-### Development Dependencies
-```bash
-npm install @vitejs/plugin-react --save-dev
-npm install react-router-dom
-```
+- Node.js 14+ 
+- npm or yarn
 
-## Project Setup
+## Setup Instructions
 
-1. Create Vite project:
-```bash
-npm create vite@latest recipe-frontend -- --template react
-cd recipe-frontend
-```
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-2. Install dependencies:
-```bash
-npm install
-npm install react-router-dom
-npm install @vitejs/plugin-react --save-dev
-```
+2. Create a `.env` file in the root directory with the following content:
+   ```
+   VITE_API_URL=http://localhost:8080/api
+   ```
 
-3. Configure Vite:
-```javascript
-// filepath: vite.config.js
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-
-export default defineConfig({
-  plugins: [react()],
-})
-```
-
-4. Start development server:
-```bash
-npm run dev
-```
+3. Start the Vite development server:
+   ```bash
+   npm run dev
+   ```
 
 ## Project Structure
-```
-recipe-frontend/
-├── src/
-│   ├── components/
-│   │   ├── auth/
-│   │   │   └── AuthForm.jsx
-│   │   ├── layout/
-│   │   │   ├── Header.jsx
-│   │   │   └── Navigation.jsx
-│   │   └── recipes/
-│   │       ├── CreateRecipe.jsx
-│   │       ├── RecipeDetail.jsx
-│   │       └── RecipeList.jsx
-│   ├── styles/
-│   │   └── components/
-│   │       ├── Auth.css
-│   │       ├── Navigation.css
-│   │       └── Recipe.css
-│   ├── App.jsx
-│   └── main.jsx
-├── vite.config.js
-└── package.json
-```
+│   ├── components/    # React components
+│   │   ├── layout/    # Layout components
+│   │   ├── pages/     # Page components
+│   │   └── recipes/   # Recipe components
+│   ├── styles/        # CSS styles
+│   │   ├── components/# Component-specific styles
+│   │   └── global.css # Global styles
+│   ├── utils/         # Utility functions
+│   │   ├── api.js     # API interaction utilities
+│   │   └── useRecipes.js # Recipe hook
+│   ├── App.jsx        # Main app component
+│   └── main.jsx       # Entry point
+└── index.html         # HTML template
 
-## Available Scripts
+## API Integration
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
+The frontend communicates with the backend API using utilities in `src/utils/api.js`. The default API URL is configured to connect to `http://localhost:8080/api`. Make sure the backend server is running before starting the frontend.
 
-## React Router Setup
+## Features
 
-```jsx
-// filepath: src/App.jsx
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/recipes" element={<RecipeList />} />
-        <Route path="/recipe/:id" element={<RecipeDetail />} />
-        <Route path="/create-recipe" element={<CreateRecipe />} />
-        <Route path="/auth" element={<AuthForm />} />
-      </Routes>
-    </Router>
-  );
-}
-```
+- View all recipes
+- View detailed recipe information
+- Create new recipes
+- Edit existing recipes
+- Delete recipes
+- Responsive design
 
 ## Development Notes
 
-- Uses HMR (Hot Module Replacement) for fast development
-- ESLint configured for React
-- React Router v6 for client-side routing
-- Component-based architecture
-- CSS modules for styling
-
-## Browser Support
-
-Vite is configured to support modern browsers. For older browser support, additional configuration may be needed.
+This project uses:
+- **React** for UI components
+- **Vite** as the build tool and development server
+- **React Router** for navigation
+- **CSS Modules** for component styling

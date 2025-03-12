@@ -4,11 +4,11 @@ import '../../styles/components/Footer.css';
 
 const Footer = () => {
   return (
-    <footer className="main-footer">
+    <footer className="site-footer">
       <div className="footer-content">
         <div className="footer-section">
-          <h3>Recipe App</h3>
-          <p>Find and share the best recipes</p>
+          <h3>About Us</h3>
+          <p>We're passionate about bringing delicious recipes to your home kitchen.</p>
         </div>
         
         <div className="footer-section">
@@ -21,7 +21,7 @@ const Footer = () => {
         </div>
         
         <div className="footer-section">
-          <h3>Connect With Us</h3>
+          <h3>Connect</h3>
           <div className="social-links">
             <a href="#" aria-label="Facebook"><span>Facebook</span></a>
             <a href="#" aria-label="Twitter"><span>Twitter</span></a>

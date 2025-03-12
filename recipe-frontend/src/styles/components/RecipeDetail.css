@@ -131,8 +131,31 @@
  *******************************/
 .recipe-actions {
   display: flex;
-  gap: 15px;
+  justify-content: space-between;
   margin-bottom: 20px;
+  width: 100%;
+}
+
+/* Style for the back button (left-aligned) */
+.recipe-actions button:first-child {
+  background-color: var(--primary-color, #4285f4); /* Changed to match edit button */
+  color: white; /* Changed to match edit button */
+  border: none; /* Removed border to match edit button */
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 8px 15px;
+}
+
+/* Style for edit button (right-aligned) */
+.recipe-actions button:last-child {
+  background-color: var(--primary-color, #4285f4);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 8px 15px;
 }
 
 .back-to-recipes {

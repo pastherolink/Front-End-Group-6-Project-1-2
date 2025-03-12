@@ -9,6 +9,24 @@
   text-align: center;
 }
 
+/* Ensure the app container takes up at least the full viewport height */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 100px;
+}
+
+/* Main content should grow to push footer down */
+.content {
+  flex: 1 0 auto;
+}
+
+/* Footer will stay at the bottom */
+.site-footer {
+  flex-shrink: 0;
+}
+
 /*******************************
  * LOGO ELEMENTS
  * Application logo styling

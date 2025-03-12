@@ -2,11 +2,10 @@
  * MAIN FOOTER CONTAINER
  * Overall footer wrapper
  *******************************/
-.main-footer {
+.site-footer {
   background-color: var(--primary-color);
   color: white;
   padding: 2rem 1rem;
-  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
   margin-top: 3rem;
 }
 
@@ -17,18 +16,36 @@
 .footer-content {
   max-width: 1200px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 /*******************************
  * FOOTER SECTIONS
  * Individual content areas
  *******************************/
+.footer-section {
+  flex: 1;
+  margin: 0 1rem 2rem;
+  min-width: 200px;
+}
+
 .footer-section h3 {
-  margin-bottom: 1rem;
   font-size: 1.2rem;
+  margin-bottom: 1rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.footer-section h3::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 50px;
+  height: 2px;
+  background-color: white;
 }
 
 /*******************************
@@ -44,14 +61,16 @@
   margin-bottom: 0.5rem;
 }
 
-.footer-links a {
-  color: white;
+.footer-links a,
+.social-links a {
+  color: #eee;
   text-decoration: none;
-  transition: opacity 0.2s ease;
+  transition: color 0.2s;
 }
 
-.footer-links a:hover {
-  opacity: 0.8;
+.footer-links a:hover,
+.social-links a:hover {
+  color: #fff;
   text-decoration: underline;
 }
 
@@ -65,14 +84,21 @@
 }
 
 .social-links a {
-  color: white;
-  text-decoration: none;
-  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.social-links a:hover {
-  opacity: 0.8;
-  text-decoration: underline;
+.social-links a span {
+  /* Hide text visually but keep it accessible for screen readers */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
 
 /*******************************
@@ -80,11 +106,13 @@
  * Bottom copyright and attribution
  *******************************/
 .footer-bottom {
-  max-width: 1200px;
-  margin: 2rem auto 0;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
   text-align: center;
+  padding-top: 2rem;
+  margin-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.footer-bottom p {
   font-size: 0.9rem;
 }
 
@@ -94,8 +122,11 @@
  *******************************/
 @media (max-width: 768px) {
   .footer-content {
-    grid-template-columns: 1fr;
-    text-align: center;
+    flex-direction: column;
+  }
+  
+  .footer-section {
+    margin-bottom: 1.5rem;
   }
   
   .social-links {
