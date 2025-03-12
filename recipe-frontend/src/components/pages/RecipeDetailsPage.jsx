@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { GET } from '../../utils/api';
+import { parseJsonField } from '../../utils/recipeUtils';
 import '../../styles/components/RecipeDetail.css';
 
 const RecipeDetailsPage = () => {
@@ -79,7 +80,7 @@ const RecipeDetailsPage = () => {
       <section className="recipe-ingredients">
         <h2>Ingredients</h2>
         <ul>
-          {recipe.ingredients?.map((ingredient, index) => (
+          {parseJsonField(recipe.ingredients).map((ingredient, index) => (
             <li key={index}>{ingredient}</li>
           ))}
         </ul>
@@ -88,7 +89,7 @@ const RecipeDetailsPage = () => {
       <section className="recipe-instructions">
         <h2>Instructions</h2>
         <ol>
-          {recipe.instructions?.map((step, index) => (
+          {parseJsonField(recipe.instructions).map((step, index) => (
             <li key={index}>{step}</li>
           ))}
         </ol>
