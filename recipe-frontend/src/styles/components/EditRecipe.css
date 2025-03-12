@@ -1,7 +1,11 @@
-/*******************************
- * MAIN CONTAINER
- * Overall page layout
- *******************************/
+/*==================================
+ * EDIT RECIPE PAGE STYLES
+ ==================================*/
+
+/*------------------------------
+ * MAIN CONTAINER 
+ * Outer wrapper for the entire edit form
+ ------------------------------*/
 .edit-recipe-container {
   display: flex;
   justify-content: center;
@@ -10,10 +14,10 @@
   min-height: calc(100vh - 80px);
 }
 
-/*******************************
- * FORM CONTAINER
- * Recipe form card
- *******************************/
+/*------------------------------
+ * FORM CONTAINER 
+ * Recipe form card with box shadow
+ ------------------------------*/
 .recipe-form {
   background: white;
   padding: 2rem;
@@ -23,10 +27,10 @@
   max-width: 800px;
 }
 
-/*******************************
- * FORM FIELDS
- * Input groups and controls
- *******************************/
+/*------------------------------
+ * BASIC FORM FIELDS
+ * Standard input groups (name, cooking time, etc.)
+ ------------------------------*/
 .form-group {
   margin-bottom: 1.5rem;
 }
@@ -47,15 +51,115 @@
   font-size: 1rem;
 }
 
+/* Regular textarea (not used in dynamic inputs) */
 .form-group textarea {
   min-height: 150px;
   resize: vertical;
 }
 
-/*******************************
- * BUTTON CONTROLS
- * Action buttons at form bottom
- *******************************/
+/*------------------------------
+ * DYNAMIC INPUT CONTAINERS
+ * Ingredients and instructions list containers
+ ------------------------------*/
+.dynamic-inputs-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+/* Individual ingredient/instruction row */
+.dynamic-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+/* Input fields within dynamic rows */
+.dynamic-input-row input,
+.dynamic-input-row textarea {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Instruction textareas */
+.dynamic-input-row textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+/*------------------------------
+ * DYNAMIC INPUT CONTROLS
+ * Up/down/delete buttons for each ingredient/instruction
+ ------------------------------*/
+.input-controls {
+  display: flex;
+  gap: 5px;
+}
+
+/* Move and remove buttons */
+.move-btn,
+.remove-btn {
+  background: var(--primary-color);
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.move-btn:hover,
+.remove-btn:hover {
+  background-color: #855252;
+}
+
+.move-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Delete button specific styling */
+.remove-btn {
+  color: var(--text-color); 
+  background-color: #dc3545;
+  border: none;
+  padding: 20px 32px;
+  margin-left: 30px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 5px;
+  transition: background-color 0.2s;
+}
+
+/* Add new ingredient/instruction button */
+.add-item-btn {
+  align-self: flex-start;
+  background-color: #5cb85c;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 5px;
+  transition: background-color 0.2s;
+}
+
+.add-item-btn:hover {
+  background-color: #4cae4c;
+}
+
+/*------------------------------
+ * FORM ACTION BUTTONS
+ * Save/Cancel/Delete buttons at form bottom
+ ------------------------------*/
 .button-group {
   display: flex;
   gap: 1rem;
@@ -88,7 +192,7 @@
   opacity: 0.9;
 }
 
-/* Danger actions */
+/* Delete recipe button */
 .delete-btn {
   background-color: #dc3545;
   color: white;
@@ -100,4 +204,23 @@
 
 .delete-btn:hover {
   background-color: #c82333;
+}
+
+/*------------------------------
+ * STATUS MESSAGES
+ * Loading/error messages
+ ------------------------------*/
+.loading,
+.error,
+.not-found {
+  text-align: center;
+  padding: 2rem;
+}
+
+.error-message {
+  color: #dc3545;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background-color: rgba(220, 53, 69, 0.1);
+  border-radius: 4px;
 }

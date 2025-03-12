@@ -10,6 +10,8 @@ function EditRecipe() {
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [ingredientsList, setIngredientsList] = useState([]);
+  const [instructionsList, setInstructionsList] = useState([]);
 
   // Extract the numeric ID from URL parameter
   const extractId = () => {
@@ -76,16 +78,19 @@ function EditRecipe() {
         const ingredients = parseArrayData(data.ingredients, 'ingredients');
         const instructions = parseArrayData(data.instructions, 'instructions');
         
-        // Ensure all expected properties exist
+        // Set these to the state variables for dynamic inputs
+        setIngredientsList(ingredients);
+        setInstructionsList(instructions);
+        
+        // Create a new object with all data properties
         const processedData = {
+          ...data,
           name: data.name || '',
           cookingTime: data.cookingTime || '',
           difficulty: data.difficulty || 'Medium',
           servings: data.servings || 1,
           ingredients: ingredients,
-          instructions: instructions,
-          // Keep other properties
-          ...data
+          instructions: instructions
         };
         
         setRecipe(processedData);
@@ -105,6 +110,70 @@ function EditRecipe() {
       setLoading(false);
     }
   }, [numericId]);
+
+  // Handle moving items up in the list
+  const moveItemUp = (index, listType) => {
+    if (index === 0) return; // Can't move up if already at top
+    
+    if (listType === 'ingredients') {
+      const updatedList = [...ingredientsList];
+      [updatedList[index - 1], updatedList[index]] = [updatedList[index], updatedList[index - 1]];
+      setIngredientsList(updatedList);
+    } else {
+      const updatedList = [...instructionsList];
+      [updatedList[index - 1], updatedList[index]] = [updatedList[index], updatedList[index - 1]];
+      setInstructionsList(updatedList);
+    }
+  };
+
+  // Handle moving items down in the list
+  const moveItemDown = (index, listType) => {
+    const list = listType === 'ingredients' ? ingredientsList : instructionsList;
+    if (index === list.length - 1) return; // Can't move down if already at bottom
+    
+    if (listType === 'ingredients') {
+      const updatedList = [...ingredientsList];
+      [updatedList[index], updatedList[index + 1]] = [updatedList[index + 1], updatedList[index]];
+      setIngredientsList(updatedList);
+    } else {
+      const updatedList = [...instructionsList];
+      [updatedList[index], updatedList[index + 1]] = [updatedList[index + 1], updatedList[index]];
+      setInstructionsList(updatedList);
+    }
+  };
+
+  // Handle updating an item
+  const updateItem = (index, value, listType) => {
+    if (listType === 'ingredients') {
+      const updatedList = [...ingredientsList];
+      updatedList[index] = value;
+      setIngredientsList(updatedList);
+    } else {
+      const updatedList = [...instructionsList];
+      updatedList[index] = value;
+      setInstructionsList(updatedList);
+    }
+  };
+
+  // Handle adding a new item
+  const addItem = (listType) => {
+    if (listType === 'ingredients') {
+      setIngredientsList([...ingredientsList, '']);
+    } else {
+      setInstructionsList([...instructionsList, '']);
+    }
+  };
+
+  // Handle removing an item
+  const removeItem = (index, listType) => {
+    if (listType === 'ingredients') {
+      const updatedList = ingredientsList.filter((_, i) => i !== index);
+      setIngredientsList(updatedList);
+    } else {
+      const updatedList = instructionsList.filter((_, i) => i !== index);
+      setInstructionsList(updatedList);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -129,24 +198,14 @@ function EditRecipe() {
       recipeToSubmit.difficulty = formElements.difficulty.value;
       recipeToSubmit.servings = parseInt(formElements.servings.value, 10) || 1;
       
-      // Handle ingredients and instructions from textareas
-      const ingredientsText = formElements.ingredients.value;
-      const instructionsText = formElements.instructions.value;
-      
-      // Split by newlines and filter empty lines
-      const ingredientsArray = ingredientsText
-        .split('\n')
-        .map(item => item.trim())
-        .filter(item => item !== '');
-      
-      const instructionsArray = instructionsText
-        .split('\n')
-        .map(item => item.trim())
-        .filter(item => item !== '');
+      // Use our state arrays for ingredients and instructions
+      // Filter out any empty items
+      const filteredIngredients = ingredientsList.filter(item => item.trim() !== '');
+      const filteredInstructions = instructionsList.filter(item => item.trim() !== '');
       
       // Ensure ingredients and instructions are properly formatted for API
-      recipeToSubmit.ingredients = JSON.stringify(ingredientsArray);
-      recipeToSubmit.instructions = JSON.stringify(instructionsArray);
+      recipeToSubmit.ingredients = JSON.stringify(filteredIngredients);
+      recipeToSubmit.instructions = JSON.stringify(filteredInstructions);
       
       console.log("Sending recipe update:", recipeToSubmit);
       
@@ -232,23 +291,100 @@ function EditRecipe() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="ingredients">Ingredients (one per line):</label>
-          <textarea 
-            id="ingredients" 
-            name="ingredients"
-            defaultValue={Array.isArray(recipe.ingredients) ? recipe.ingredients.join('\n') : ''}
-            required
-          ></textarea>
+          <label>Ingredients:</label>
+          <div className="dynamic-inputs-container">
+            {ingredientsList.map((ingredient, index) => (
+              <div key={`ingredient-${index}`} className="dynamic-input-row">
+                <input
+                  type="text"
+                  value={ingredient}
+                  onChange={(e) => updateItem(index, e.target.value, 'ingredients')}
+                  placeholder="Enter ingredient"
+                  required
+                />
+                <div className="input-controls">
+                  <button 
+                    type="button" 
+                    onClick={() => moveItemUp(index, 'ingredients')}
+                    disabled={index === 0}
+                    className="move-btn"
+                  >
+                    ↑
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => moveItemDown(index, 'ingredients')}
+                    disabled={index === ingredientsList.length - 1}
+                    className="move-btn"
+                  >
+                    ↓
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => removeItem(index, 'ingredients')}
+                    className="remove-btn"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            ))}
+            <button 
+              type="button" 
+              onClick={() => addItem('ingredients')}
+              className="add-item-btn"
+            >
+              + Add Ingredient
+            </button>
+          </div>
         </div>
 
         <div className="form-group">
-          <label htmlFor="instructions">Instructions (one per line):</label>
-          <textarea 
-            id="instructions" 
-            name="instructions"
-            defaultValue={Array.isArray(recipe.instructions) ? recipe.instructions.join('\n') : ''}
-            required
-          ></textarea>
+          <label>Instructions:</label>
+          <div className="dynamic-inputs-container">
+            {instructionsList.map((instruction, index) => (
+              <div key={`instruction-${index}`} className="dynamic-input-row">
+                <textarea
+                  value={instruction}
+                  onChange={(e) => updateItem(index, e.target.value, 'instructions')}
+                  placeholder="Enter instruction step"
+                  required
+                />
+                <div className="input-controls">
+                  <button 
+                    type="button" 
+                    onClick={() => moveItemUp(index, 'instructions')}
+                    disabled={index === 0}
+                    className="move-btn"
+                  >
+                    ↑
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => moveItemDown(index, 'instructions')}
+                    disabled={index === instructionsList.length - 1}
+                    className="move-btn"
+                  >
+                    ↓
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => removeItem(index, 'instructions')}
+                    className="remove-btn"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            ))}
+            <button 
+              type="button" 
+              onClick={() => addItem('instructions')}
+              className="add-item-btn"
+            >
+              + Add Instruction Step
+            </button>
+          </div>
         </div>
 
         <div className="button-group">
