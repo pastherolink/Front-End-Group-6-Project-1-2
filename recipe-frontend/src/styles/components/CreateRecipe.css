@@ -220,7 +220,7 @@ body.dark .recipe-form h1 {
 
 .remove-btn {
   background-color: #dc3545;
-  color: white;
+  color: white !important;
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
