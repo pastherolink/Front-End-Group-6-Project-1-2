@@ -17,7 +17,7 @@ import './styles/App.css';
 
 // Create a wrapper component to apply the theme
 const ThemedApp = () => {
-  const { theme } = useTheme();
+  const { theme } = useTheme(); // Access the current theme ('light' or 'dark') from ThemeContext
   
   useEffect(() => {
     // Set the theme class on the body element
@@ -26,17 +26,17 @@ const ThemedApp = () => {
 
   return (
     <div className="app">
-      <Navigation />
+      <Navigation /> {/* Navigation bar for the app */}
       <main className="content">
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<AuthForm type="login" />} />
-          <Route path="/register" element={<AuthForm type="register" />} />
+          <Route path="/" element={<HomePage />} /> {/* Home page route */}
+          <Route path="/login" element={<AuthForm type="login" />} /> {/* Login form */}
+          <Route path="/register" element={<AuthForm type="register" />} /> {/* Registration form */}
           <Route 
             path="/recipes" 
             element={
-              <ProtectedRoute>
-                <RecipesPage />
+              <ProtectedRoute> {/* Protects the route, only accessible to authenticated users */}
+                <RecipesPage /> {/* Displays a list of recipes */}
               </ProtectedRoute>
             } 
           />
@@ -44,7 +44,7 @@ const ThemedApp = () => {
             path="/recipe/:id" 
             element={
               <ProtectedRoute>
-                <RecipeDetailsPage />
+                <RecipeDetailsPage /> {/* Displays details of a specific recipe */}
               </ProtectedRoute>
             } 
           />
@@ -52,7 +52,7 @@ const ThemedApp = () => {
             path="/create-recipe" 
             element={
               <ProtectedRoute>
-                <CreateRecipePage />
+                <CreateRecipePage /> {/* Form to create a new recipe */}
               </ProtectedRoute>
             } 
           />
@@ -60,7 +60,7 @@ const ThemedApp = () => {
             path="/recipe/edit/:id" 
             element={
               <ProtectedRoute>
-                <EditRecipe />
+                <EditRecipe /> {/* Form to edit an existing recipe */}
               </ProtectedRoute>
             } 
           />
@@ -76,16 +76,16 @@ const ThemedApp = () => {
           />
         </Routes>
       </main>
-      <Footer />
+      <Footer /> {/* Footer component */}
     </div>
   );
 };
 
 function App() {
   return (
-    <AuthProvider>
-      <ThemeProvider>
-        <Router>
+    <AuthProvider> {/* Provides authentication context */}
+      <ThemeProvider> {/* Provides theme context */}
+        <Router> {/* Enables routing for the app */}
           <ThemedApp />
         </Router>
       </ThemeProvider>

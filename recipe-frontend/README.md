@@ -43,6 +43,20 @@ The React frontend (built with Vite) for our Recipe Management application.
 
 The frontend communicates with the backend API using utilities in `src/utils/api.js`. The default API URL is configured to connect to `http://localhost:8080/api`. Make sure the backend server is running before starting the frontend.
 
+## API Routes
+
+The frontend communicates with the following backend API routes:
+
+- **GET /api/recipes**: Fetch all recipes.
+- **GET /api/recipes/:id**: Fetch details of a specific recipe by ID.
+- **POST /api/recipes**: Create a new recipe (requires authentication).
+- **PUT /api/recipes/:id**: Update an existing recipe by ID (requires authentication).
+- **DELETE /api/recipes/:id**: Delete a recipe by ID (requires authentication).
+- **POST /api/auth/login**: Authenticate a user and return a token.
+- **POST /api/auth/register**: Register a new user.
+
+Make sure the backend server is running and accessible at the URL specified in the `.env` file.
+
 ## Features
 
 - View all recipes
